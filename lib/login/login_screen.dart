@@ -21,12 +21,14 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(48.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Image.asset("assets/bm_logo.png"),
               Text("패캠 마트", style: TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 42,
               ),),
@@ -55,6 +57,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       border: OutlineInputBorder(),
                       labelText: "비밀번호",
                     ),
+                    obscureText: true,
+                    keyboardType: TextInputType.visiblePassword,
                     validator: (value){
                       if (value == null || value.isEmpty) {
                         return "비밀번호를 입력하세요";
@@ -79,6 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Text("계정이 없나요? 회원가입")
               ),
               Divider(),
+              Image.asset("assets/google_login.png"),
             ],
           ),
         ),
