@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "14655649036",
+    "project_id": "fastcampus-market-c5a55",
+    "storage_bucket": "fastcampus-market-c5a55.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:14655649036:android:8a0b4835ed345994838529",
+        "android_client_info": {
+          "package_name": "com.example.flutter_moving_screen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "14655649036-4r97g27c4si38c0g84irftfumnuqteua.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzkJD-PeI0aTgWnADZFLjbicRovPnGxkg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "14655649036-4r97g27c4si38c0g84irftfumnuqteua.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
