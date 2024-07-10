@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_moving_screen/home/widget/home_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,10 +33,24 @@ class _HomeScreenState extends State<HomeScreen> {
       body: IndexedStack(
         index: _menuIndex,
         children: [
-          Container(color: Colors.green,),
+          HomeWidget(),
           Container(color: Colors.indigo,),
         ],
       ),
+
+      floatingActionButton: switch(_menuIndex){
+        0 => FloatingActionButton(
+          onPressed: (){},
+          child: Icon(Icons.shopping_cart_outlined),
+        ),
+
+        1 => FloatingActionButton(
+          onPressed: (){},
+          child: Icon(Icons.add),
+        ),
+        _ => Container()
+      },
+
 
       bottomNavigationBar: NavigationBar(
         selectedIndex: _menuIndex,
@@ -49,6 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
           NavigationDestination(icon: Icon(Icons.storefront), label: "사장님"),
         ],
       ),
+
     );
   }
 }
