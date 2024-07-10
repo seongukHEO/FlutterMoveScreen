@@ -6,7 +6,7 @@ import 'package:flutter_moving_screen/login/login_screen.dart';
 
 void main() {
   runApp(MaterialApp(
-    home:  ProductAddScreen(),
+    home:  HomeScreen(),
   ));
 }
 

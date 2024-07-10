@@ -1,6 +1,7 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_moving_screen/home/product_detail_screen.dart';
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({super.key});
@@ -93,6 +94,25 @@ class _HomeWidgetState extends State<HomeWidget> {
                       Container(
                         height: 240,
                         color: Colors.orange,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                            itemBuilder: (c, i){
+                              return GestureDetector(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context){
+                                    return ProductDetailScreen();
+                                  }));
+                                },
+                                child: Container(
+                                  width: 160,
+                                  margin: EdgeInsets.only(right: 16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey
+                                  ),
+                                ),
+                              );
+                            }
+                        ),
                       )
                     ],
                   ),
