@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_moving_screen/home/cart_screen.dart';
 import 'package:flutter_moving_screen/home/widget/home_widget.dart';
 import 'package:flutter_moving_screen/home/widget/seller_widget.dart';
 
@@ -42,7 +43,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
       floatingActionButton: switch(_menuIndex){
         0 => FloatingActionButton(
-          onPressed: (){},
+          onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context){
+              return CartScreen();
+            }));
+          },
           child: Icon(Icons.shopping_cart_outlined),
         ),
 
