@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_moving_screen/home/widget/home_widget.dart';
+import 'package:flutter_moving_screen/home/widget/seller_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,17 +25,18 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: (){},
               icon: Icon(Icons.logout)
           ),
-          IconButton(
-              onPressed: (){},
-              icon: Icon(Icons.search)
-          )
+          if (_menuIndex == 0)
+            IconButton(
+                onPressed: (){},
+                icon: Icon(Icons.search)
+            )
         ],
       ),
       body: IndexedStack(
         index: _menuIndex,
         children: [
           HomeWidget(),
-          Container(color: Colors.indigo,),
+          SellerWidget()
         ],
       ),
 
