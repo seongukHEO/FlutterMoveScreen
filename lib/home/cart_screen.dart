@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CartScreen extends StatefulWidget {
-  const CartScreen({super.key});
+  final String uid;
+  const CartScreen({required this.uid,super.key});
 
   @override
   State<CartScreen> createState() => _CartScreenState();
