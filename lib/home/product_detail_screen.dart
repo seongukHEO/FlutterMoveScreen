@@ -33,11 +33,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            decoration: BoxDecoration(
-                              color: Colors.red
+                            decoration: BoxDecoration(color: Colors.red),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12),
+                            child: Text(
+                              "할인중",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
                             ),
-                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                            child: Text("할인중", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
                           )
                         ],
                       ),
@@ -51,51 +55,83 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("패캠 플러터", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
-                            PopupMenuButton(itemBuilder: (context){
-                              return [
-                                PopupMenuItem(child: Text("리뷰등록"))
-                              ];
+                            Text(
+                              "패캠 플러터",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 24),
+                            ),
+                            PopupMenuButton(itemBuilder: (context) {
+                              return [PopupMenuItem(
+                                  child: Text("리뷰등록"),
+                                  onTap: (){
+                                    showDialog(context: context, builder: (context){
+                                      return AlertDialog(
+                                        title: Text("리뷰 등록"),
+                                        content: Column(
+                                          //Colume의 사이즈를 핏하게 맞춘다!
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            TextField(),
+                                            Row(
+                                              children:
+                                                List.generate(5, (index) => Icon(Icons.star, color: Colors.orange,))
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    });
+                                  },
+                              )];
                             })
                           ],
                         ),
                         Text("제품 상세 정보"),
                         Text("상세 상세"),
-                        SizedBox(height: 18,),
+                        SizedBox(
+                          height: 18,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("1000000원"),
                             Spacer(),
-                            Icon(Icons.star, color: Colors.orange,),
+                            Icon(
+                              Icons.star,
+                              color: Colors.orange,
+                            ),
                             Text("4.5")
                           ],
                         )
-
                       ],
                     ),
                   ),
-                  DefaultTabController(length: 2, child: Column(
-                    children: [
-                      TabBar(tabs: [
-                        Tab(text: "제품 상세",),
-                        Tab(text: "리뷰",),
-                      ]),
-                      Container(
-                        height: 500,
-                        child: TabBarView(
-                          children: [
-                            Container(
-                              child: Text("제품 상세"),
+                  DefaultTabController(
+                      length: 2,
+                      child: Column(
+                        children: [
+                          TabBar(tabs: [
+                            Tab(
+                              text: "제품 상세",
                             ),
-                            Container(
-                              child: Text("리뷰"),
+                            Tab(
+                              text: "리뷰",
                             ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ))
+                          ]),
+                          Container(
+                            height: 500,
+                            child: TabBarView(
+                              children: [
+                                Container(
+                                  child: Text("제품 상세"),
+                                ),
+                                Container(
+                                  child: Text("리뷰"),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ))
                 ],
               ),
             ),
@@ -106,7 +142,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               decoration: BoxDecoration(
                 color: Colors.red.shade100,
               ),
-              child: Center(child: Text("장바구니", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),)),
+              child: Center(
+                  child: Text(
+                "장바구니",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+              )),
             ),
           )
         ],
