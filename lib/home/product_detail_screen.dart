@@ -61,27 +61,64 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   fontWeight: FontWeight.bold, fontSize: 24),
                             ),
                             PopupMenuButton(itemBuilder: (context) {
-                              return [PopupMenuItem(
+                              return [
+                                PopupMenuItem(
                                   child: Text("리뷰등록"),
-                                  onTap: (){
-                                    showDialog(context: context, builder: (context){
-                                      return AlertDialog(
-                                        title: Text("리뷰 등록"),
-                                        content: Column(
-                                          //Colume의 사이즈를 핏하게 맞춘다!
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            TextField(),
-                                            Row(
-                                              children:
-                                                List.generate(5, (index) => Icon(Icons.star, color: Colors.orange,))
-                                            )
-                                          ],
-                                        ),
-                                      );
-                                    });
+                                  onTap: () {
+                                    int reviewScore = 0;
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          TextEditingController reviewTex = TextEditingController();
+                                          return StatefulBuilder(
+                                            builder: (context, setState) {
+                                              return AlertDialog(
+                                                title: Text("리뷰 등록"),
+                                                content: Column(
+                                                  //Colume의 사이즈를 핏하게 맞춘다!
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    TextField(
+                                                      controller: reviewTex,
+                                                    ),
+                                                    Row(
+                                                        children: List.generate(
+                                                            5, (index) => IconButton(
+                                                            onPressed: (){
+                                                              setState(
+                                                                  () => reviewScore = index
+                                                              );
+                                                            },
+                                                            icon: Icon(
+                                                              Icons.star,
+                                                              color: index <= reviewScore
+                                                                           ? Colors.orange
+                                                                           : Colors.grey
+                                                            )
+                                                        )
+                                                        )
+                                                    )
+                                                  ],
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text("취소")
+                                                  ),
+                                                  TextButton(
+                                                      onPressed: () {},
+                                                      child: Text("등록")
+                                                  ),
+                                                ],
+                                              );
+                                            }
+                                          );
+                                        });
                                   },
-                              )];
+                                )
+                              ];
                             })
                           ],
                         ),
