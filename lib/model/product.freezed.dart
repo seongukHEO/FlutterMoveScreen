@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+Product _$ProductFromJson(Map<String, dynamic> json) {
+  return _Product.fromJson(json);
+}
+
 /// @nodoc
 mixin _$Product {
   String? get docId => throw _privateConstructorUsedError;
@@ -26,6 +30,7 @@ mixin _$Product {
   String? get imgUrl => throw _privateConstructorUsedError;
   int? get timeStamp => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $ProductCopyWith<Product> get copyWith => throw _privateConstructorUsedError;
 }
@@ -193,7 +198,7 @@ class __$$ProductImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$ProductImpl implements _Product {
   _$ProductImpl(
       {this.docId,
@@ -205,6 +210,9 @@ class _$ProductImpl implements _Product {
       this.saleRate,
       this.imgUrl,
       this.timeStamp});
+
+  factory _$ProductImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ProductImplFromJson(json);
 
   @override
   final String? docId;
@@ -249,6 +257,7 @@ class _$ProductImpl implements _Product {
                 other.timeStamp == timeStamp));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, docId, title, description, price,
       isSale, stock, saleRate, imgUrl, timeStamp);
@@ -258,6 +267,13 @@ class _$ProductImpl implements _Product {
   @pragma('vm:prefer-inline')
   _$$ProductImplCopyWith<_$ProductImpl> get copyWith =>
       __$$ProductImplCopyWithImpl<_$ProductImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ProductImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _Product implements Product {
@@ -271,6 +287,8 @@ abstract class _Product implements Product {
       final double? saleRate,
       final String? imgUrl,
       final int? timeStamp}) = _$ProductImpl;
+
+  factory _Product.fromJson(Map<String, dynamic> json) = _$ProductImpl.fromJson;
 
   @override
   String? get docId;
