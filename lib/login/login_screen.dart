@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_moving_screen/login/sign_up_screen.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -80,11 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               TextButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context){
-                      return SignUpScreen();
-                    }));
-                  },
+                  onPressed: () => context.push("/sign_up"),
                   child: Text("계정이 없나요? 회원가입")
               ),
               Divider(),

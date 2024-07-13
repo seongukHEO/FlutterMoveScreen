@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
             builder: (context, state) => LoginScreen()
         ),
         GoRoute(
-            path: "/sign up",
+            path: "/sign_up",
             builder: (context, state) => SignUpScreen()
         ),
 
