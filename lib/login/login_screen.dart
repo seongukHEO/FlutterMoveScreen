@@ -1,4 +1,5 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_moving_screen/login/sign_up_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +18,26 @@ class _LoginScreenState extends State<LoginScreen> {
   //사용자에게 입력 받을 값
   TextEditingController emailTextController = TextEditingController();
   TextEditingController pwTextController = TextEditingController();
+  
+  //사용자가 입력한 값이 Auth에 있는지 확인하는 로직
+  Future<UserCredential?> signIn(String email, String password) async {
+    try {
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+      return credential;
+      
+    }on FirebaseAuthException catch(e){
+      if (e.code == "user-not-found") {
+        print(e.toString());
+      }else if (e.code == "wrong-password") {
+        print(e.toString());
+      }  
+      
+    } catch(e){
+      print(e.toString());
+
+
+    }
+  }
 
 
 
