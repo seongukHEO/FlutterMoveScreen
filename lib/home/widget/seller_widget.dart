@@ -1,5 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+Future addCategory(String title) async {
+  final db = FirebaseFirestore.instance;
+  final ref = db.collection("category");
+  await ref.add({"title" : title});
+}
+
+
 
 class SellerWidget extends StatefulWidget {
   const SellerWidget({super.key});
@@ -26,7 +35,27 @@ class _SellerWidgetState extends State<SellerWidget> {
                   child: Text("카테고리 일괄등록")
               ),
               ElevatedButton(
-                  onPressed: (){},
+                  onPressed: (){
+                    TextEditingController tec = TextEditingController();
+                    showAdaptiveDialog(context: context, builder: (context){
+                      return AlertDialog(
+                        content: TextField(
+                          controller: tec,
+                        ),
+                        actions: [
+                          TextButton(
+                              onPressed: ()async{
+                                if (tec.text.isNotEmpty) {
+                                  await addCategory(tec.text.trim());
+                                  Navigator.pop(context);
+                                }
+                              },
+                              child: Text("등록")
+                          )
+                        ],
+                      );
+                    });
+                  },
                   child: Text("카테고리 등록")
               ),
             ],
