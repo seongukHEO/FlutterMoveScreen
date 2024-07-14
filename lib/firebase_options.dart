@@ -16,7 +16,7 @@ class DefaultFirebaseOptions {
     appId: "1:14655649036:android:8a0b4835ed345994838529",
     messagingSenderId: "14655649036",
     projectId: "fastcampus-market-c5a55",
-    authDomain: "fastcampus-market-c5a55.firebaseapp.com",  // 올바른 authDomain 설정
+    authDomain: "fastcampus-market-c5a55.firebaseapp.com",
     storageBucket: "fastcampus-market-c5a55.appspot.com",
   );
 
@@ -25,10 +25,11 @@ class DefaultFirebaseOptions {
     appId: "1:14655649036:ios:aa991969c3e6a182838529",
     messagingSenderId: "14655649036",
     projectId: "fastcampus-market-c5a55",
-    authDomain: "fastcampus-market-c5a55.firebaseapp.com",  // 올바른 authDomain 설정
+    authDomain: "fastcampus-market-c5a55.firebaseapp.com",
     storageBucket: "fastcampus-market-c5a55.appspot.com",
-    iosClientId: "app-1-14655649036-ios-aa991969c3e6a182838529",
+    iosClientId: "14655649036-xxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com",
     iosBundleId: "com.example.flutterMovingScreen",
   );
+
 
 }
