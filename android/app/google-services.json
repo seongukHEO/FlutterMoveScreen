@@ -29,6 +29,13 @@
             {
               "client_id": "14655649036-4r97g27c4si38c0g84irftfumnuqteua.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "14655649036-937ci5kv3js4s0oh0nq2gm9b7aaj35fd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flutterMovingScreen"
+              }
             }
           ]
         }
