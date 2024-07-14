@@ -31,7 +31,31 @@ class _SellerWidgetState extends State<SellerWidget> {
           ButtonBar(
             children: [
               ElevatedButton(
-                  onPressed: (){},
+                  onPressed: ()async{
+                    List<String> categories = [
+                      "정육",
+                      "과자",
+                      "아이스크림",
+                      "유제품",
+                      "과일",
+                      "라면",
+                      "빵",
+                      "쿠키"
+                    ];
+                    final ref = FirebaseFirestore.instance.collection("category");
+                    final tmp = await ref.get();
+
+                    //이게 무슨 함수냐하면
+                    //위의 리스트를 순회하면서 일단 값을 가져오고
+                    //그걸 다 삭제해준다? (중복을 제거하기 위해서)
+                    for(var element in tmp.docs){
+                      await element.reference.delete();
+                    }
+
+                    for(var element in categories){
+                      await ref.add({"title" : element});
+                    }
+                  },
                   child: Text("카테고리 일괄등록")
               ),
               ElevatedButton(
