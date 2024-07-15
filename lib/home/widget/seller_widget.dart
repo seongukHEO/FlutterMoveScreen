@@ -24,6 +24,16 @@ Future<List<Product>> fetchProduct()async{
 }
 
 
+Stream<QuerySnapshot> streamProduct(String query){
+  final db = FirebaseFirestore.instance;
+  if (query.isNotEmpty) {
+    return db.collection("products").orderBy("title")
+        .startAt([query]).endAt([query + "\uf8ff"]).snapshots();
+  }
+  return db.collection("products").orderBy("timestamp").snapshots();
+}
+
+
 class SellerWidget extends StatefulWidget {
   const SellerWidget({super.key});
 
@@ -117,52 +127,92 @@ class _SellerWidgetState extends State<SellerWidget> {
           ),
 
           Expanded(
-              child: ListView.builder(
-                  itemBuilder: (c, i){
-                    return Container(
-                      height: 120,
-                      margin: EdgeInsets.only(bottom: 16),
-                      child: Row(
-                        children: [
-                          Container(width: 120, 
-                            decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.circular(8)
-                            ),),
-                          Expanded(child: Padding(
-                            padding: const EdgeInsets.only(left: 16),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text("제품명", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
-                                    PopupMenuButton(itemBuilder: (context) => [
-                                      PopupMenuItem(child: Text("리뷰")),
-                                      PopupMenuItem(child: Text("삭제")),
-                                    ]),
-                                  ],
-                                ),
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                    child: Text("가격")
-                                ),
-                                Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Text("할인중")
-                                ),
-                                Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Text("재고 수량")
-                                ),
-                              ],
+              child: StreamBuilder(
+                stream: streamProduct(textEditingController.text),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final items = snapshot.data?.docs.map((e) =>
+                    Product.fromJson(e.data() as Map<String, dynamic>).copyWith(docId: e.id)
+                    ).toList();
+                    return ListView.builder(
+                      itemCount: items?.length,
+                        itemBuilder: (c, i){
+                        final item = items?[i];
+                          //데이터가 있을때
+                          return GestureDetector(
+                            onTap: (){
+
+                            },
+                            child: Container(
+                              height: 120,
+                              margin: EdgeInsets.only(bottom: 16),
+                              child: Row(
+                                children: [
+                                  Container(width: 120,
+                                    decoration: BoxDecoration(
+                                        color: Colors.blue,
+                                        borderRadius: BorderRadius.circular(8),
+                                      image: DecorationImage(
+                                        image: NetworkImage(item?.imgUrl ?? ""),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),),
+                                  Expanded(child: Padding(
+                                    padding: const EdgeInsets.only(left: 16),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(item?.title?? "제품명", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                                            PopupMenuButton(itemBuilder: (context) => [
+                                              PopupMenuItem(child: Text("리뷰")),
+                                              PopupMenuItem(
+                                                  child: Text("삭제"),
+
+
+                                                //데이터 삭제 코드
+                                                onTap: ()async{
+                                                    FirebaseFirestore.instance.collection("products").doc(
+                                                      item?.docId
+                                                    ).delete();
+                                                },
+                                              ),
+                                            ]),
+                                          ],
+                                        ),
+                                        Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Text("${item?.price}")
+                                        ),
+                                        Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Text(
+                                              switch(item?.isSale){
+                                                true => "할인 중",
+                                                false => "할인 없음",
+                                                _ => "??"
+                                            }
+                                            )
+                                        ),
+                                        Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Text("재고 수량 : ${item?.stock}")
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                                ],
+                              ),
                             ),
-                          ))
-                        ],
-                      ),
+                          );
+                        }
                     );
+                  }else{
+                    return Center(child: CircularProgressIndicator(),);
                   }
+                }
               ))
         ],
       ),
