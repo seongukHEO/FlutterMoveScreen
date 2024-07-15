@@ -2,12 +2,26 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../model/product.dart';
+
 Future addCategory(String title) async {
   final db = FirebaseFirestore.instance;
   final ref = db.collection("category");
   await ref.add({"title" : title});
 }
 
+
+Future<List<Product>> fetchProduct()async{
+  final db = FirebaseFirestore.instance;
+  final resp = await db.collection("products").orderBy("timestamp").get();
+  List<Product> items = [];
+  for(var doc in resp.docs){
+    final item = Product.fromJson(doc.data());
+    final realItem = item.copyWith(docId: doc.id);
+    items.add(item);
+  }
+  return items;
+}
 
 
 class SellerWidget extends StatefulWidget {
@@ -18,6 +32,9 @@ class SellerWidget extends StatefulWidget {
 }
 
 class _SellerWidgetState extends State<SellerWidget> {
+  TextEditingController textEditingController = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -26,10 +43,20 @@ class _SellerWidgetState extends State<SellerWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SearchBar(),
+          SearchBar(
+            controller: textEditingController,
+            leading: Icon(Icons.search),
+            onChanged: (s){
+              setState(() {
+
+              });
+            },
+            hintText: "상품명 입력",
+          ),
           SizedBox(height: 16,),
           ButtonBar(
             children: [
+              //굳아 필요 없을듯,,
               ElevatedButton(
                   onPressed: ()async{
                     List<String> categories = [
