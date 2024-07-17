@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_moving_screen/home/cart_screen.dart';
+import 'package:flutter_moving_screen/home/product_add_screen.dart';
 import 'package:flutter_moving_screen/home/widget/home_widget.dart';
 import 'package:flutter_moving_screen/home/widget/seller_widget.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -54,7 +56,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
 
         1 => FloatingActionButton(
-          onPressed: (){},
+          onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context){
+              return ProductAddScreen();
+            }));
+          },
           child: Icon(Icons.add),
         ),
         _ => Container()

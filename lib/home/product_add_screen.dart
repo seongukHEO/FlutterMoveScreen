@@ -1,8 +1,3 @@
-import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
-import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
-import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
-import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
-import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -12,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:typed_data' as Uint8List; // dart:typed_data에 별칭을 붙입니다.
+import 'dart:typed_data'; // dart:typed_data에 별칭을 붙입니다.
 
 class ProductAddScreen extends StatefulWidget {
   const ProductAddScreen({super.key});
@@ -34,7 +29,7 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
 
   //이미지 피커 라이브러리에 있는 것들
 
-  Uint8List imageData;
+  Uint8List? imageData;
   XFile? image;
 
   Category? selectedCategory;

@@ -54,7 +54,7 @@ class FastCampusMarketApp extends StatelessWidget {
             ),
             GoRoute(
                 path: "product/add",
-                builder: (context, state) => ProductDetailScreen()
+                builder: (context, state) => ProductAddScreen()
             ),
           ]
         ),
