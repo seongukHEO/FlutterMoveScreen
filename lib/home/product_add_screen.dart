@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:flutter_moving_screen/home/camera_example.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data'; // dart:typed_data에 별칭을 붙입니다.
 
@@ -47,6 +48,14 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
       appBar: AppBar(
         title: Text("상품 추가"),
         actions: [
+          IconButton(
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context){
+                  return CameraExample();
+                }));
+              },
+              icon: Icon(Icons.camera)
+          ),
           IconButton(
               onPressed: (){},
               icon: Icon(Icons.batch_prediction)
