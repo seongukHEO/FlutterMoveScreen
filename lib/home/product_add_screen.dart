@@ -67,6 +67,11 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
                 onTap: () async {
                   final  picker = ImagePicker();
                   image = await picker.pickImage(source: ImageSource.gallery);
+                  //긁어온 이미지를 바이트로 변환해준다
+                  imageData = await image?.readAsBytes();
+                  setState(() {
+                    
+                  });
                 },
                 child: Align(
                   alignment: Alignment.center,
@@ -80,13 +85,13 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
                         color: Colors.grey
                       )
                     ),
-                    child: Column(
+                    child: imageData == null ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.add),
                         Text("제품(상품) 이미지 추가"),
                       ],
-                    ),
+                    ) : Image.memory(imageData!, fit: BoxFit.cover,)
                   ),
                 ),
               ),
