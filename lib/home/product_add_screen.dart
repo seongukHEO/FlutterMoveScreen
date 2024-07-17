@@ -1,5 +1,18 @@
+import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
+import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
+import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
+import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
+import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:typed_data' as Uint8List; // dart:typed_data에 별칭을 붙입니다.
 
 class ProductAddScreen extends StatefulWidget {
   const ProductAddScreen({super.key});
@@ -14,6 +27,18 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
 
   //할인중인지
   bool inSale = false;
+
+  final db = FirebaseFirestore.instance;
+  final storage = FirebaseStorage.instance;
+
+
+  //이미지 피커 라이브러리에 있는 것들
+
+  Uint8List imageData;
+  XFile? image;
+
+  Category? selectedCategory;
+
   TextEditingController titleTEC = TextEditingController();
   TextEditingController descriptionTEC = TextEditingController();
   TextEditingController priceTEC = TextEditingController();
@@ -43,24 +68,30 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                  height: 240,
-                  width: 240,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: Colors.grey
-                    )
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.add),
-                      Text("제품(상품) 이미지 추가"),
-                    ],
+              GestureDetector(
+                onTap: () async {
+                  final  picker = ImagePicker();
+                  image = await picker.pickImage(source: ImageSource.gallery);
+                },
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    height: 240,
+                    width: 240,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Colors.grey
+                      )
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.add),
+                        Text("제품(상품) 이미지 추가"),
+                      ],
+                    ),
                   ),
                 ),
               ),
