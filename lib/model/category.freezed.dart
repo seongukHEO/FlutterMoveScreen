@@ -32,7 +32,7 @@ mixin _$Category {
 /// @nodoc
 abstract class $CategoryCopyWith<$Res> {
   factory $CategoryCopyWith(Category value, $Res Function(Category) then) =
-      _$CategoryCopyWithImpl<$Res, Category>;
+  _$CategoryCopyWithImpl<$Res, Category>;
   @useResult
   $Res call({String? title, String? docId});
 }
@@ -57,11 +57,11 @@ class _$CategoryCopyWithImpl<$Res, $Val extends Category>
       title: freezed == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
-              as String?,
+      as String?,
       docId: freezed == docId
           ? _value.docId
           : docId // ignore: cast_nullable_to_non_nullable
-              as String?,
+      as String?,
     ) as $Val);
   }
 }
@@ -70,8 +70,8 @@ class _$CategoryCopyWithImpl<$Res, $Val extends Category>
 abstract class _$$CategoryImplCopyWith<$Res>
     implements $CategoryCopyWith<$Res> {
   factory _$$CategoryImplCopyWith(
-          _$CategoryImpl value, $Res Function(_$CategoryImpl) then) =
-      __$$CategoryImplCopyWithImpl<$Res>;
+      _$CategoryImpl value, $Res Function(_$CategoryImpl) then) =
+  __$$CategoryImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String? title, String? docId});
@@ -95,18 +95,18 @@ class __$$CategoryImplCopyWithImpl<$Res>
       title: freezed == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
-              as String?,
+      as String?,
       docId: freezed == docId
           ? _value.docId
           : docId // ignore: cast_nullable_to_non_nullable
-              as String?,
+      as String?,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$CategoryImpl with DiagnosticableTreeMixin implements _Category {
+class _$CategoryImpl implements _Category {
   _$CategoryImpl({this.title, this.docId});
 
   factory _$CategoryImpl.fromJson(Map<String, dynamic> json) =>
@@ -118,17 +118,8 @@ class _$CategoryImpl with DiagnosticableTreeMixin implements _Category {
   final String? docId;
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString() {
     return 'Category(title: $title, docId: $docId)';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'Category'))
-      ..add(DiagnosticsProperty('title', title))
-      ..add(DiagnosticsProperty('docId', docId));
   }
 
   @override
@@ -160,10 +151,10 @@ class _$CategoryImpl with DiagnosticableTreeMixin implements _Category {
 
 abstract class _Category implements Category {
   factory _Category({final String? title, final String? docId}) =
-      _$CategoryImpl;
+  _$CategoryImpl;
 
   factory _Category.fromJson(Map<String, dynamic> json) =
-      _$CategoryImpl.fromJson;
+  _$CategoryImpl.fromJson;
 
   @override
   String? get title;

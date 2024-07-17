@@ -2,13 +2,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_moving_screen/home/camera_example.dart';
+import 'package:flutter_moving_screen/model/category.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data'; // dart:typed_data에 별칭을 붙입니다.
+
+
+
 
 class ProductAddScreen extends StatefulWidget {
   const ProductAddScreen({super.key});
@@ -40,6 +43,23 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
   TextEditingController priceTEC = TextEditingController();
   TextEditingController stockTEC = TextEditingController();
   TextEditingController salePercentTEC = TextEditingController();
+
+  List<Category> categoryItems = [];
+
+  //카테고리 가져오기
+  Future<List<Category>> _fetchCategories() async{
+    final db = FirebaseFirestore.instance;
+    final resp = await db.collection("category").get();
+    for(var doc in resp.docs){
+      categoryItems.add(Category(
+        docId : doc.id,
+        title : doc.data()['title']
+      ));
+    }
+
+
+
+  }
 
 
   @override
