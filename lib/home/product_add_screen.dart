@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,9 +9,6 @@ import 'package:flutter_moving_screen/model/category.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data'; // dart:typed_data에 별칭을 붙입니다.
 
-
-
-
 class ProductAddScreen extends StatefulWidget {
   const ProductAddScreen({super.key});
 
@@ -21,7 +17,6 @@ class ProductAddScreen extends StatefulWidget {
 }
 
 class _ProductAddScreenState extends State<ProductAddScreen> {
-
   final _formKey = GlobalKey<FormState>();
 
   //할인중인지
@@ -29,7 +24,6 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
 
   final db = FirebaseFirestore.instance;
   final storage = FirebaseStorage.instance;
-
 
   //이미지 피커 라이브러리에 있는 것들
 
@@ -47,20 +41,24 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
   List<Category> categoryItems = [];
 
   //카테고리 가져오기
-  Future<List<Category>> _fetchCategories() async{
+  Future<List<Category>> _fetchCategories() async {
     final db = FirebaseFirestore.instance;
     final resp = await db.collection("category").get();
-    for(var doc in resp.docs){
-      categoryItems.add(Category(
-        docId : doc.id,
-        title : doc.data()['title']
-      ));
+    for (var doc in resp.docs) {
+      categoryItems.add(Category(docId: doc.id, title: doc.data()['title']));
     }
-
-
-
+    setState(() {
+      selectedCategory = categoryItems.first;
+    });
+    return categoryItems;
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _fetchCategories();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,21 +67,14 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
         title: Text("상품 추가"),
         actions: [
           IconButton(
-              onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context){
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return CameraExample();
                 }));
               },
-              icon: Icon(Icons.camera)
-          ),
-          IconButton(
-              onPressed: (){},
-              icon: Icon(Icons.batch_prediction)
-          ),
-          IconButton(
-              onPressed: (){},
-              icon: Icon(Icons.add)
-          ),
+              icon: Icon(Icons.camera)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.batch_prediction)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.add)),
         ],
       ),
       body: SingleChildScrollView(
@@ -94,39 +85,41 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
             children: [
               GestureDetector(
                 onTap: () async {
-                  final  picker = ImagePicker();
+                  final picker = ImagePicker();
                   image = await picker.pickImage(source: ImageSource.gallery);
                   //긁어온 이미지를 바이트로 변환해준다
                   imageData = await image?.readAsBytes();
-                  setState(() {
-                    
-                  });
+                  setState(() {});
                 },
                 child: Align(
                   alignment: Alignment.center,
                   child: Container(
-                    height: 240,
-                    width: 240,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: Colors.grey
-                      )
-                    ),
-                    child: imageData == null ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.add),
-                        Text("제품(상품) 이미지 추가"),
-                      ],
-                    ) : Image.memory(imageData!, fit: BoxFit.cover,)
-                  ),
+                      height: 240,
+                      width: 240,
+                      decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey)),
+                      child: imageData == null
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.add),
+                                Text("제품(상품) 이미지 추가"),
+                              ],
+                            )
+                          : Image.memory(
+                              imageData!,
+                              fit: BoxFit.cover,
+                            )),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Text("기본정보", style: Theme.of(context).textTheme.headlineSmall,),
+                child: Text(
+                  "기본정보",
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
               ),
               Form(
                   key: _formKey,
@@ -136,72 +129,77 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
                       TextFormField(
                         controller: titleTEC,
                         decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: "상품명",
-                          hintText: "상품명을 입력하세요"
-                        ),
-                        validator: (value){
+                            border: OutlineInputBorder(),
+                            labelText: "상품명",
+                            hintText: "상품명을 입력하세요"),
+                        validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "필수 입력 항목입니다";
                           }
                           return null;
                         },
                       ),
-                      SizedBox(height: 16,),
+                      SizedBox(
+                        height: 16,
+                      ),
                       TextFormField(
                         controller: descriptionTEC,
                         decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: "상품 설명",
+                          border: OutlineInputBorder(),
+                          labelText: "상품 설명",
                         ),
                         maxLength: 254,
                         maxLines: null,
                         keyboardType: TextInputType.multiline,
-                        validator: (value){
+                        validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "필수 입력 항목입니다";
                           }
                           return null;
                         },
                       ),
-                      SizedBox(height: 16,),
+                      SizedBox(
+                        height: 16,
+                      ),
                       TextFormField(
                         controller: priceTEC,
                         decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: "가격(단가)",
-                          hintText: "1개 가격 입력"
-                        ),
+                            border: OutlineInputBorder(),
+                            labelText: "가격(단가)",
+                            hintText: "1개 가격 입력"),
                         keyboardType: TextInputType.number,
-                        validator: (value){
+                        validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "필수 입력 항목입니다";
                           }
                           return null;
                         },
                       ),
-                      SizedBox(height: 16,),
+                      SizedBox(
+                        height: 16,
+                      ),
                       TextFormField(
                         controller: stockTEC,
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: "수량",
-                            hintText: "입고 및 재고 수량"
-                        ),
+                            hintText: "입고 및 재고 수량"),
                         keyboardType: TextInputType.number,
-                        validator: (value){
+                        validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "필수 입력 항목입니다";
                           }
                           return null;
                         },
                       ),
-                      SwitchListTile.adaptive(value: inSale, onChanged: (v){
-                        setState(() {
-                          inSale = v;
-                        });
-                      },
-                      title: Text('할인 여부'),
+                      SwitchListTile.adaptive(
+                        value: inSale,
+                        onChanged: (v) {
+                          setState(() {
+                            inSale = v;
+                          });
+                        },
+                        title: Text('할인 여부'),
                       ),
                       if (inSale)
                         TextFormField(
@@ -211,22 +209,33 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
                             labelText: "할인률",
                           ),
                           keyboardType: TextInputType.number,
-                          validator: (value){
+                          validator: (value) {
                             return null;
                           },
                         ),
-                      SizedBox(height: 16,),
-                      Text("카테고리 선택", style: TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 16
-                      ),),
-                      DropdownButton(
-                          isExpanded: true,
-                          items: [],
-                          onChanged: (s){}
-                      )
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Text(
+                        "카테고리 선택",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                      categoryItems.isNotEmpty
+                          ? DropdownButton<Category>(
+                              isExpanded: true,
+                              value: selectedCategory,
+                              items: categoryItems
+                                  .map((e) => DropdownMenuItem(
+                                  value: e,
+                                  child: Text('${e.title}')))
+                                  .toList(),
+                              onChanged: (s) {})
+                          : Center(
+                              child: CircularProgressIndicator(),
+                            )
                     ],
-                  )
-              )
+                  ))
             ],
           ),
         ),
