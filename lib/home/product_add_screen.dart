@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_moving_screen/home/camera_example.dart';
 import 'package:flutter_moving_screen/model/category.dart';
+import 'package:flutter_moving_screen/model/product.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data'; // dart:typed_data에 별칭을 붙입니다.
 
@@ -53,6 +56,45 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
     return categoryItems;
   }
 
+  Future<Uint8List> imageCompressList(Uint8List list) async{
+    var result = await FlutterImageCompress.compressWithList(list, quality: 50);
+    return result;
+  }
+
+  Future addProduct()async{
+    if (imageData != null) {
+      final storageRef = storage.ref()
+      //파일명 지정하기
+          .child("${DateTime.now().millisecondsSinceEpoch} _${
+          image?.name ?? "??"
+      }.jpg");
+
+      final compressData = await imageCompressList(imageData!);
+      //이미지 데이터를 받아와서 집어넣기
+      await storageRef.putData(compressData);
+      //다운로드 링크를 얻어와야 한다
+      final downloadLink = await storageRef.getDownloadURL();
+      //이거 그거랑 비슷하네
+      //안드로이드 개발할 때 매개변수에 해당하는 값을 넣어주고 그걸 최종적으로 변수로 만들어서 값을 파베에 저장하는거
+      final sampleData = Product(
+        title: titleTEC.text,
+        description: descriptionTEC.text,
+        price: int.parse(priceTEC.text),
+        stock: int.parse(stockTEC.text),
+        isSale: inSale,
+        //할인율은 있을 수도 없을 수도 있다
+        saleRate: salePercentTEC.text.isNotEmpty
+          ? double.parse(salePercentTEC.text) : 0,
+        
+        imgUrl: downloadLink,
+        timeStamp: DateTime.now().millisecondsSinceEpoch
+      );
+      final doc = await db.collection("product").add(sampleData.toJson());
+      await doc.collection("category").add(selectedCategory?.toJson() ?? {});
+      final categoryRef = db.collection("category").doc(selectedCategory?.docId);
+      await categoryRef.collection("product").add({"docId" : doc.id});
+    }
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -73,8 +115,16 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
                 }));
               },
               icon: Icon(Icons.camera)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.batch_prediction)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.add)),
+          IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.batch_prediction)
+          ),
+          IconButton(
+              onPressed: () {
+                addProduct();
+              },
+              icon: Icon(Icons.add)
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -230,7 +280,11 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
                                   value: e,
                                   child: Text('${e.title}')))
                                   .toList(),
-                              onChanged: (s) {})
+                              onChanged: (s) {
+                                setState(() {
+                                  selectedCategory = s;
+                                });
+                              })
                           : Center(
                               child: CircularProgressIndicator(),
                             )
