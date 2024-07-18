@@ -167,12 +167,25 @@ class _SellerWidgetState extends State<SellerWidget> {
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(item?.title?? "제품명", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
-                                            PopupMenuButton(itemBuilder: (context) => [
+                                            PopupMenuButton(
+                                                itemBuilder: (context) => [
                                               PopupMenuItem(child: Text("리뷰")),
                                               PopupMenuItem(
+                                                  child: Text("수정하기"),
+                                                onTap: ()async {
+                                                    final db = FirebaseFirestore.instance;
+                                                    final ref = db.collection("product");
+                                                    await ref.doc(item?.docId).update(
+                                                      item!.copyWith(
+                                                        title: "milk",
+                                                        price: 20000,
+                                                        stock: 10
+                                                      ).toJson()
+                                                    );
+                                                },
+                                              ),
+                                              PopupMenuItem(
                                                   child: Text("삭제"),
-
-
                                                 //데이터 삭제 코드
                                                 onTap: ()async{
                                                     FirebaseFirestore.instance.collection("product").doc(
@@ -185,7 +198,7 @@ class _SellerWidgetState extends State<SellerWidget> {
                                         ),
                                         Align(
                                             alignment: Alignment.topLeft,
-                                            child: Text("${item?.price}")
+                                            child: Text("${item?.price}원")
                                         ),
                                         Align(
                                             alignment: Alignment.topLeft,
