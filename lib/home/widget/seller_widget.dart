@@ -13,7 +13,7 @@ Future addCategory(String title) async {
 
 Future<List<Product>> fetchProduct()async{
   final db = FirebaseFirestore.instance;
-  final resp = await db.collection("products").orderBy("timestamp").get();
+  final resp = await db.collection("product").orderBy("timestamp").get();
   List<Product> items = [];
   for(var doc in resp.docs){
     final item = Product.fromJson(doc.data());
@@ -27,10 +27,10 @@ Future<List<Product>> fetchProduct()async{
 Stream<QuerySnapshot> streamProduct(String query){
   final db = FirebaseFirestore.instance;
   if (query.isNotEmpty) {
-    return db.collection("products").orderBy("title")
+    return db.collection("product").orderBy("title")
         .startAt([query]).endAt([query + "\uf8ff"]).snapshots();
   }
-  return db.collection("products").orderBy("timestamp").snapshots();
+  return db.collection("product").orderBy("timeStamp").snapshots();
 }
 
 
@@ -138,6 +138,7 @@ class _SellerWidgetState extends State<SellerWidget> {
                       itemCount: items?.length,
                         itemBuilder: (c, i){
                         final item = items?[i];
+                        print("test1234 : ${item?.title}");
                           //데이터가 있을때
                           return GestureDetector(
                             onTap: (){
@@ -174,7 +175,7 @@ class _SellerWidgetState extends State<SellerWidget> {
 
                                                 //데이터 삭제 코드
                                                 onTap: ()async{
-                                                    FirebaseFirestore.instance.collection("products").doc(
+                                                    FirebaseFirestore.instance.collection("product").doc(
                                                       item?.docId
                                                     ).delete();
                                                 },

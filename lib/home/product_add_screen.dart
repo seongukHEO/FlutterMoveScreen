@@ -124,6 +124,7 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
             imgUrl: downloadLink,
             timeStamp: DateTime.now().millisecondsSinceEpoch
         );
+        //컬렉션 안에 컬렉션 만들기
         final doc = await db.collection("product").add(sampleData.toJson());
         await doc.collection("category").add(selectedCategory?.toJson() ?? {});
         final categoryRef = db.collection("category").doc(selectedCategory?.docId);
