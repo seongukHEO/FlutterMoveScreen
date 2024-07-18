@@ -95,6 +95,42 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
       await categoryRef.collection("product").add({"docId" : doc.id});
     }
   }
+
+  //일괄 등록 오늘이후에는 딱히 안쓸 예정
+  Future addProducts() async{
+    if (imageData != null) {
+      final storageRef = storage.ref()
+      //파일명 지정하기
+          .child("${DateTime.now().millisecondsSinceEpoch} _${
+          image?.name ?? "??"
+      }.jpg");
+
+      final compressData = await imageCompressList(imageData!);
+      //이미지 데이터를 받아와서 집어넣기
+      await storageRef.putData(compressData);
+      //다운로드 링크를 얻어와야 한다
+      final downloadLink = await storageRef.getDownloadURL();
+      for(var i = 0; i < 10; i++){
+        final sampleData = Product(
+            title: "${titleTEC.text}$i",
+            description: descriptionTEC.text,
+            price: int.parse(priceTEC.text),
+            stock: int.parse(stockTEC.text),
+            isSale: inSale,
+            //할인율은 있을 수도 없을 수도 있다
+            saleRate: salePercentTEC.text.isNotEmpty
+                ? double.parse(salePercentTEC.text) : 0,
+
+            imgUrl: downloadLink,
+            timeStamp: DateTime.now().millisecondsSinceEpoch
+        );
+        final doc = await db.collection("product").add(sampleData.toJson());
+        await doc.collection("category").add(selectedCategory?.toJson() ?? {});
+        final categoryRef = db.collection("category").doc(selectedCategory?.docId);
+        await categoryRef.collection("product").add({"docId" : doc.id});
+      }
+    }
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -116,7 +152,9 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
               },
               icon: Icon(Icons.camera)),
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                addProducts();
+              },
               icon: Icon(Icons.batch_prediction)
           ),
           IconButton(
