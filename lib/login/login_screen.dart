@@ -2,6 +2,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_moving_screen/login/sign_up_screen.dart';
+import 'package:flutter_moving_screen/main.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -24,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email, password: password);
+      userCredential = credential;
       return credential;
     } on FirebaseAuthException catch (e) {
       if (e.code == "user-not-found") {
@@ -46,6 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken
     );
+    userCredential = credential as UserCredential?;
     return await FirebaseAuth.instance.signInWithCredential(credential);
 
   }

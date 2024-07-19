@@ -1,10 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_moving_screen/main.dart';
 
 import '../model/product.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Product product;
+
   const ProductDetailScreen({super.key, required this.product});
 
   @override
@@ -29,28 +32,26 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     height: 320,
                     padding: EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(widget.product.imgUrl ?? ""),
-                        fit: BoxFit.cover
-                      )
-                    ),
+                        image: DecorationImage(
+                            image: NetworkImage(widget.product.imgUrl ?? ""),
+                            fit: BoxFit.cover)),
                     child: Center(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          switch(widget.product.isSale){
-                          true => Container(
-                            decoration: BoxDecoration(color: Colors.red),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12),
-                            child: Text(
-                              "할인중",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                            ),
-                          ),
-                          _ => Container(),
+                          switch (widget.product.isSale) {
+                            true => Container(
+                                decoration: BoxDecoration(color: Colors.red),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 12),
+                                child: Text(
+                                  "할인중",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
+                              ),
+                            _ => Container(),
                           }
                         ],
                       ),
@@ -65,7 +66,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              widget.product.title?? "",
+                              widget.product.title ?? "",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 24),
                             ),
@@ -78,52 +79,50 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                     showDialog(
                                         context: context,
                                         builder: (context) {
-                                          TextEditingController reviewTex = TextEditingController();
+                                          TextEditingController reviewTex =
+                                              TextEditingController();
                                           return StatefulBuilder(
-                                            builder: (context, setState) {
-                                              return AlertDialog(
-                                                title: Text("리뷰 등록"),
-                                                content: Column(
-                                                  //Colume의 사이즈를 핏하게 맞춘다!
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    TextField(
-                                                      controller: reviewTex,
-                                                    ),
-                                                    Row(
-                                                        children: List.generate(
-                                                            5, (index) => IconButton(
-                                                            onPressed: (){
-                                                              setState(
-                                                                  () => reviewScore = index
-                                                              );
-                                                            },
-                                                            icon: Icon(
-                                                              Icons.star,
-                                                              color: index <= reviewScore
-                                                                           ? Colors.orange
-                                                                           : Colors.grey
-                                                            )
-                                                        )
-                                                        )
-                                                    )
-                                                  ],
-                                                ),
-                                                actions: [
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Text("취소")
+                                              builder: (context, setState) {
+                                            return AlertDialog(
+                                              title: Text("리뷰 등록"),
+                                              content: Column(
+                                                //Colume의 사이즈를 핏하게 맞춘다!
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  TextField(
+                                                    controller: reviewTex,
                                                   ),
-                                                  TextButton(
-                                                      onPressed: () {},
-                                                      child: Text("등록")
-                                                  ),
+                                                  Row(
+                                                      children: List.generate(
+                                                          5,
+                                                          (index) => IconButton(
+                                                              onPressed: () {
+                                                                setState(() =>
+                                                                    reviewScore =
+                                                                        index);
+                                                              },
+                                                              icon: Icon(
+                                                                  Icons.star,
+                                                                  color: index <=
+                                                                          reviewScore
+                                                                      ? Colors
+                                                                          .orange
+                                                                      : Colors
+                                                                          .grey))))
                                                 ],
-                                              );
-                                            }
-                                          );
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text("취소")),
+                                                TextButton(
+                                                    onPressed: () {},
+                                                    child: Text("등록")),
+                                              ],
+                                            );
+                                          });
                                         });
                                   },
                                 )
@@ -183,6 +182,46 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ),
           ),
           GestureDetector(
+            onTap: () async {
+              final db = FirebaseFirestore.instance;
+
+              //그니까 밑의 코드를 설명하자면 처음에 우리가 글로벌하게 선언했던 유저 정보에 데이터가 있는지 확인하고
+              //그러고 해당 컬렉션에서 내가 원하는 product.docId가 있는지 확인한다
+              //즉 이미 카트라는 컬렉션에 값이 있는지 내가 저장하고자 하는 product가 있는지 확인한다
+              final dupItem = await db
+                  .collection("cart")
+                  .where("uid", isEqualTo: userCredential?.user?.uid ?? "")
+                  .where("product.docId", isEqualTo: widget.product.docId)
+                  .get();
+
+              if (dupItem.docs.isNotEmpty) {
+                if (context.mounted) {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          content: Text("장바구니에 이미 등록이 되어 있습니다"),
+                        );
+                      });
+                }
+                return;
+              }
+              // 장바구니 추가
+              await db.collection("cart").add({
+                "uid": userCredential?.user?.uid ?? "",
+                "email": userCredential?.user?.email ?? "",
+                "timeStamp": DateTime.now().millisecondsSinceEpoch,
+                "product": widget.product.toJson(),
+                "count": 1
+              });
+              if (context.mounted) {
+                showDialog(context: context, builder: (context){
+                  return AlertDialog(
+                    content: Text("장바구니 등록 완료"),
+                  );
+                });
+              }
+            },
             child: Container(
               height: 72,
               decoration: BoxDecoration(
