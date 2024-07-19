@@ -5,6 +5,7 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_moving_screen/home/product_detail_screen.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../model/category.dart';
 import '../../model/product.dart';
@@ -167,11 +168,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                     final item = items[i];
                                     return GestureDetector(
                                       onTap: () {
-                                        Navigator.push(context,
-                                            MaterialPageRoute(
-                                                builder: (context) {
-                                                  return ProductDetailScreen();
-                                                }));
+                                        context.go("/product", extra: item);
                                       },
                                       child: Column(
                                         children: [

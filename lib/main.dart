@@ -11,6 +11,7 @@ import 'package:flutter_moving_screen/home/product_add_screen.dart';
 import 'package:flutter_moving_screen/home/product_detail_screen.dart';
 import 'package:flutter_moving_screen/login/login_screen.dart';
 import 'package:flutter_moving_screen/login/sign_up_screen.dart';
+import 'package:flutter_moving_screen/model/product.dart';
 import 'package:go_router/go_router.dart';
 
 import 'firebase_options.dart';
@@ -55,7 +56,7 @@ class FastCampusMarketApp extends StatelessWidget {
             ),
             GoRoute(
                 path: "product",
-                builder: (context, state) => ProductDetailScreen()
+                builder: (context, state) => ProductDetailScreen(product: state.extra as Product,)
             ),
             GoRoute(
                 path: "product/add",
