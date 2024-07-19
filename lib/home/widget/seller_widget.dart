@@ -188,9 +188,26 @@ class _SellerWidgetState extends State<SellerWidget> {
                                                   child: Text("삭제"),
                                                 //데이터 삭제 코드
                                                 onTap: ()async{
-                                                    FirebaseFirestore.instance.collection("product").doc(
+                                                     await FirebaseFirestore.instance.collection("product").doc(
                                                       item?.docId
                                                     ).delete();
+                                                     
+                                                     final db = FirebaseFirestore.instance;
+                                                     final productCategory = await db.collection("product").doc(item?.docId)
+                                                     //이건 product 컬렉션 내부의 컬렉션
+                                                     .collection("category").get();
+                                                     final foo = productCategory.docs.first;
+                                                     //카테고리의 아이디를 가져온다
+                                                     final categoryId = foo.data()["docId"];
+                                                     //이건 카테고리 컬렉션 내부의 컬렉션
+                                                     final bar = await db.collection("category").doc(categoryId)
+                                                         .collection("product")
+                                                     //where은 해당 값이 같은지 같지 않은지를 판단해준다
+                                                         .where("docId", isEqualTo: item?.docId).get();
+                                                     bar.docs.forEach((element){
+                                                       element.reference.delete();
+                                                     });
+                                                     
                                                 },
                                               ),
                                             ]),
