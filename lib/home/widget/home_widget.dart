@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_moving_screen/home/product_detail_screen.dart';
+
+import '../../model/category.dart';
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({super.key});
@@ -14,6 +17,14 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   PageController pageController = PageController();
   int bannerIndex = 0;
+
+  //카테고리 목록 가져오기
+  Stream<QuerySnapshot<Map<String, dynamic>>> streamCategory(){
+    return FirebaseFirestore.instance.collection("category").snapshots();
+  }
+
+  List<Category> categoryItems = [];
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -73,7 +84,36 @@ class _HomeWidgetState extends State<HomeWidget> {
                 //여기에는 카테고리 목록을 받아오는 위젯 구현
                 Container(
                   height: 200,
-                  color: Colors.red,
+                  child: StreamBuilder(
+                    stream: streamCategory(),
+                    builder: (context, snapshot){
+                      if (snapshot.hasData) {
+                        categoryItems.clear();
+                        //  데이터를 한 번 초기화 해준다
+                        final docs = snapshot.data;
+                        final docItems = docs?.docs ?? [];
+                        for(var doc in docItems){
+                          categoryItems.add(Category(docId: doc.id, title: doc.data()["title"]));
+                        }
+                        return GridView.builder(
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 4,
+                            ),
+                            itemCount: categoryItems.length,
+                            itemBuilder: (c, i){
+                              final item = categoryItems[i];
+                              return Column(
+                                children: [
+                                  CircleAvatar(),
+                                  SizedBox(height: 8,)
+                                ],
+                              );
+                            }
+                        );
+                      }
+                      return Center(child: CircularProgressIndicator(),);
+                    },
+                  ),
                 ),
                 Container(
                   margin: EdgeInsets.only(bottom: 24),
