@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/cupertino.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_moving_screen/home/product_detail_screen.dart';
 
 import '../../model/category.dart';
+import '../../model/product.dart';
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({super.key});
@@ -24,6 +27,19 @@ class _HomeWidgetState extends State<HomeWidget> {
   }
 
   List<Category> categoryItems = [];
+
+  Future<List<Product>> fetchSaleProducts() async {
+    final db = FirebaseFirestore.instance;
+    final resp = await db.collection("product").where('isSale', isEqualTo: true).get();
+    List<Product> items = [];
+    for (var doc in resp.docs) {
+      final item = Product.fromJson(doc.data());
+      final realItem = item.copyWith(docId: doc.id);
+      items.add(realItem);
+    }
+    return items;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -104,8 +120,12 @@ class _HomeWidgetState extends State<HomeWidget> {
                               final item = categoryItems[i];
                               return Column(
                                 children: [
-                                  CircleAvatar(),
-                                  SizedBox(height: 8,)
+                                  CircleAvatar(
+                                    radius: 24,
+                                  ),
+                                  SizedBox(height: 8,),
+                                  Text(item.title ?? "카테고리", style: TextStyle(fontWeight: FontWeight.bold),),
+
                                 ],
                               );
                             }
@@ -126,32 +146,65 @@ class _HomeWidgetState extends State<HomeWidget> {
                         children: [
                           Text("오늘의 특가", style: TextStyle(fontWeight: FontWeight.w400, fontSize: 18),),
                           TextButton(
-                              onPressed: (){},
+                              onPressed: (){
+
+                              },
                               child: Text("더보기")
                           )
                         ],
                       ),
                       Container(
                         height: 240,
-                        color: Colors.orange,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                            itemBuilder: (c, i){
-                              return GestureDetector(
-                                onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context){
-                                    return ProductDetailScreen();
-                                  }));
-                                },
-                                child: Container(
-                                  width: 160,
-                                  margin: EdgeInsets.only(right: 16),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey
-                                  ),
-                                ),
+                        child: FutureBuilder(
+                          future: fetchSaleProducts(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              final items = snapshot.data ?? [];
+                              return ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: items.length,
+                                  itemBuilder: (c, i) {
+                                    final item = items[i];
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                                  return ProductDetailScreen();
+                                                }));
+                                      },
+                                      child: Column(
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                              width: 160,
+                                              margin: EdgeInsets.only(
+                                                  right: 16),
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey,
+                                                //이미지 데이터 넣어주기
+                                                image: DecorationImage(
+                                                    image: NetworkImage(
+                                                        item.imgUrl ?? ""),
+                                                    fit: BoxFit.cover
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Align(
+                                              child: Text(item.title ?? ""),
+                                            alignment: Alignment.center,
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  }
                               );
                             }
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
                         ),
                       )
                     ],
