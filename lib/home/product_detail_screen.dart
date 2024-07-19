@@ -16,7 +16,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("패캠 제품 상세"),
+        title: Text("${widget.product.title}"),
       ),
       body: Column(
         children: [
@@ -29,13 +29,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     height: 320,
                     padding: EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.orange,
+                      image: DecorationImage(
+                        image: NetworkImage(widget.product.imgUrl ?? ""),
+                        fit: BoxFit.cover
+                      )
                     ),
                     child: Center(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
+                          switch(widget.product.isSale){
+                          true => Container(
                             decoration: BoxDecoration(color: Colors.red),
                             padding: EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 12),
@@ -45,7 +49,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white),
                             ),
-                          )
+                          ),
+                          _ => Container(),
+                          }
                         ],
                       ),
                     ),
@@ -59,7 +65,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "패캠 플러터",
+                              widget.product.title?? "",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 24),
                             ),
@@ -126,14 +132,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           ],
                         ),
                         Text("제품 상세 정보"),
-                        Text("상세 상세"),
+                        Text("${widget.product.description}"),
                         SizedBox(
                           height: 18,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("1000000원"),
+                            Text("${widget.product.price}원"),
                             Spacer(),
                             Icon(
                               Icons.star,
