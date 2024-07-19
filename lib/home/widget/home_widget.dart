@@ -181,6 +181,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                               margin: EdgeInsets.only(
                                                   right: 16),
                                               decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(8),
                                                 color: Colors.grey,
                                                 //이미지 데이터 넣어주기
                                                 image: DecorationImage(
@@ -192,9 +193,17 @@ class _HomeWidgetState extends State<HomeWidget> {
                                             ),
                                           ),
                                           Align(
-                                              child: Text(item.title ?? ""),
+                                              child: Text(item.title ?? "", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
                                             alignment: Alignment.center,
-                                          )
+                                          ),
+                                          Align(
+                                            child: Text("${item.price} 원", style: TextStyle(decoration: TextDecoration.lineThrough),),
+                                            alignment: Alignment.center,
+                                          ),
+                                          Align(
+                                            child: Text("${(item.price! * (item.saleRate! / 100)).toStringAsFixed(0)}원"),
+                                            alignment: Alignment.center,
+                                          ),
                                         ],
                                       ),
                                     );
