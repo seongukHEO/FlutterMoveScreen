@@ -1,8 +1,10 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_moving_screen/login/provider/login_provider.dart';
 import 'package:flutter_moving_screen/login/sign_up_screen.dart';
 import 'package:flutter_moving_screen/main.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -25,7 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email, password: password);
-      userCredential = credential;
       return credential;
     } on FirebaseAuthException catch (e) {
       if (e.code == "user-not-found") {
@@ -48,7 +49,6 @@ class _LoginScreenState extends State<LoginScreen> {
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken
     );
-    userCredential = credential as UserCredential?;
     return await FirebaseAuth.instance.signInWithCredential(credential);
 
   }
@@ -112,39 +112,44 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 48),
-                  child: MaterialButton(
-                    onPressed: () async {
-                      if (_formKey.currentState != null &&
-                          _formKey.currentState!.validate()) {
-                        _formKey.currentState!.save();
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      return MaterialButton(
+                        onPressed: () async {
+                          if (_formKey.currentState != null &&
+                              _formKey.currentState!.validate()) {
+                            _formKey.currentState!.save();
 
-                        final result = await signIn(
-                          emailTextController.text.trim(),
-                          pwTextController.text.trim(),
-                        );
-                        if (result != null) {
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("로그인 성공")),
+                            final result = await signIn(
+                              emailTextController.text.trim(),
+                              pwTextController.text.trim(),
                             );
-                            context.go("/");
+                            if (result != null) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("로그인 성공")),
+                                );
+                                ref.watch(userCredentialProvider.notifier).state = result;
+                                context.go("/");
+                              }
+                            } else {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("로그인 실패")),
+                                );
+                              }
+                            }
                           }
-                        } else {
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("로그인 실패")),
-                            );
-                          }
-                        }
-                      }
-                    },
-                    height: 48,
-                    minWidth: double.infinity,
-                    color: Colors.red,
-                    child: Text(
-                      "로그인",
-                      style: TextStyle(color: Colors.white),
-                    ),
+                        },
+                        height: 48,
+                        minWidth: double.infinity,
+                        color: Colors.red,
+                        child: Text(
+                          "로그인",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      );
+                    }
                   ),
                 ),
                 TextButton(

@@ -12,6 +12,7 @@ import 'package:flutter_moving_screen/home/product_detail_screen.dart';
 import 'package:flutter_moving_screen/login/login_screen.dart';
 import 'package:flutter_moving_screen/login/sign_up_screen.dart';
 import 'package:flutter_moving_screen/model/product.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'firebase_options.dart';
@@ -38,7 +39,7 @@ void main() async{
     }
   }
 
-  runApp(FastCampusMarketApp(),
+  runApp(ProviderScope(child: FastCampusMarketApp()),
   );
 }
 
