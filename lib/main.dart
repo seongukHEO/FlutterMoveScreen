@@ -53,7 +53,7 @@ class FastCampusMarketApp extends StatelessWidget {
           routes: [
             GoRoute(
                 path: "cart/:uid",
-              builder: (context, state) => CartScreen(uid : state.pathParameters["Uid"] ?? "")
+              builder: (context, state) => CartScreen(uid : state.pathParameters["uid"] ?? "")
             ),
             GoRoute(
                 path: "product",

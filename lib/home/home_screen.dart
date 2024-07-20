@@ -4,6 +4,7 @@ import 'package:flutter_moving_screen/home/cart_screen.dart';
 import 'package:flutter_moving_screen/home/product_add_screen.dart';
 import 'package:flutter_moving_screen/home/widget/home_widget.dart';
 import 'package:flutter_moving_screen/home/widget/seller_widget.dart';
+import 'package:flutter_moving_screen/main.dart';
 import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -46,11 +47,11 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: switch(_menuIndex){
         0 => FloatingActionButton(
           onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context){
-              return CartScreen(
-                uid: "",
-              );
-            }));
+            final uid = userCredential?.user?.uid ?? "";
+            if (uid == null) {
+              return;
+            }
+            context.go("/cart/$uid");
           },
           child: Icon(Icons.shopping_cart_outlined),
         ),
