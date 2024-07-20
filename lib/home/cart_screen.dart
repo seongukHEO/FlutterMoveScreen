@@ -138,9 +138,31 @@ class _CartScreenState extends State<CartScreen> {
                     "합계",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
-                  Text(
-                    "100000000원",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                  StreamBuilder(
+                    stream: streamCartItems(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        
+                        List<Cart> items = snapshot.data?.docs.map((e){
+                          final foo = Cart.fromJson(e.data());
+                          return foo.copyWith(cartDocId: e.id);
+                        }).toList() ?? [];
+                        
+                        double totalPrice = 0;
+                        for(var element in items){
+                          if (element.product?.isSale ?? false) {
+                            totalPrice += ((element.product!.price! * (element.product!.saleRate! / 100)) * (element.count ?? 1));
+                          } else{
+                            totalPrice += element.product!.price! * (element.count ?? 1);
+                          }
+                        }
+                        return Text(
+                          "${totalPrice.toStringAsFixed(0)}",
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                        );
+                      };
+                      return Center(child: CircularProgressIndicator(),);
+                    }
                   )
                 ],
               ),
