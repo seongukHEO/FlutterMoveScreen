@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_moving_screen/login/provider/login_provider.dart';
 import 'package:flutter_moving_screen/main.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../model/product.dart';
 
@@ -15,6 +17,13 @@ class ProductDetailScreen extends StatefulWidget {
 }
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
+
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> streamReview(){
+    final db = FirebaseFirestore.instance;
+    return db.collection("product").doc("${widget.product.docId}").collection("reviews").snapshots();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,6 +86,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   onTap: () {
                                     int reviewScore = 0;
                                     showDialog(
+                                      barrierDismissible: false,
                                         context: context,
                                         builder: (context) {
                                           TextEditingController reviewTex =
@@ -117,9 +127,24 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                                       Navigator.pop(context);
                                                     },
                                                     child: Text("취소")),
-                                                TextButton(
-                                                    onPressed: () {},
-                                                    child: Text("등록")),
+                                                Consumer(
+                                                  builder: (context, ref, child) {
+                                                    final user = ref.watch(userCredentialProvider);
+                                                    return TextButton(
+                                                        onPressed: () async{
+                                                          await FirebaseFirestore.instance.collection("product").doc("${widget.product.docId}")
+                                                              .collection("reviews").add({
+                                                            "uid" : user?.user?.uid ?? "",
+                                                            "email" : user?.user?.email ?? "",
+                                                            "review" : reviewTex.text.trim(),
+                                                            "timeStamp" : Timestamp.now(),
+                                                            "score" : reviewScore + 1
+                                                          });
+                                                          Navigator.pop(context);
+                                                        },
+                                                        child: Text("등록"));
+                                                  }
+                                                ),
                                               ],
                                             );
                                           });
@@ -169,8 +194,26 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 Container(
                                   child: Text("제품 상세"),
                                 ),
-                                Container(
-                                  child: Text("리뷰"),
+                                StreamBuilder(
+                                  stream: streamReview(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      final items = snapshot.data?.docs ?? [];
+                                      return ListView.separated(
+                                          itemBuilder: (c, i){
+                                            final item = items[i];
+                                            return ListTile(
+                                              title: Text(item.data()["review"]),
+                                              leading: Text(item.data()["email"]),
+                                            );
+
+                                          },
+                                          separatorBuilder: (_, __) => Divider(),
+                                          itemCount: items.length
+                                      );
+                                    }
+                                    return Center(child: CircularProgressIndicator(),);
+                                  }
                                 ),
                               ],
                             ),
